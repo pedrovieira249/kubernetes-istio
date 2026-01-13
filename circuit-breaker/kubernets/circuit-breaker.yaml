@@ -1,0 +1,13 @@
+apiVersion: networking.istio.io/v1
+kind: DestinationRule
+metadata:
+  name: circuit-breaker-servicex
+spec:
+  host: servicex-service
+  trafficPolicy:
+    outlierDetection:
+      # consecutive5xxErrors: 2
+      consecutiveGatewayErrors: 2
+      interval: 20s
+      baseEjectionTime: 30s
+      maxEjectionPercent: 100

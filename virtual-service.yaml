@@ -1,0 +1,17 @@
+apiVersion: networking.istio.io/v1
+kind: VirtualService
+metadata:
+  name: nginx-virtual-service
+spec:
+  hosts: 
+  - nginx-service
+  http:
+    - route:  
+      - destination:
+          host: nginx-service
+          subset: v1
+        weight: 60
+      - destination:
+          host: nginx-service
+          subset: v2
+        weight: 40

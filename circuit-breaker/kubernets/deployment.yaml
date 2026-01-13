@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: servicex
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: servicex
+  template:
+    metadata:
+      labels:
+        app: servicex
+        version: "200"
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: servicex
+        image: pedrovieira249/circuit-breaker-example-go:latest
+        ports:
+        - containerPort: 8000
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+            ephemeral-storage: "64Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
+            ephemeral-storage: "128Mi"
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: servicex-error
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: servicex
+  template:
+    metadata:
+      labels:
+        app: servicex
+        version: "504"
+    spec:
+      automountServiceAccountToken: false
+      containers:
+      - name: servicex
+        image: pedrovieira249/circuit-breaker-example-go:latest
+        ports:
+        - containerPort: 8000
+        env:
+          - name: error
+            value: "yes"
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "128Mi"
+            ephemeral-storage: "64Mi"
+          limits:
+            cpu: "250m"
+            memory: "256Mi"
+            ephemeral-storage: "128Mi"
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: servicex-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: servicex 
+  ports:
+  - name: http-servicex
+    port: 80
+    targetPort: 8000
