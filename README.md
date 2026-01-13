@@ -277,7 +277,6 @@ Para validar que o cluster foi removido:
 k3d cluster list
 
 ```
-
 ---
 
 ### 💡 Dicas Adicionais para o seu README:
